@@ -4,6 +4,8 @@ fun DependencyHandler.androidx(){
     implementation(Deps.ANDROIDX_CORE_KTX)
     implementation(Deps.ANDROIDX_LIFECYCLE_RUNTIME_KTX)
     implementation(Deps.ANDROIDX_ACTIVITY_COMPOSE)
+    implementation(Deps.ANDROIDX_ACTIVITY)
+    implementation(Deps.APPCOMPAT)
     platformImplementation(Deps.ANDROIDX_COMPOSE_BOM)
     implementation(Deps.ANDROIDX_UI)
     implementation(Deps.ANDROIDX_UI_GRAPHICS)

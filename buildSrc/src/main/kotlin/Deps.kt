@@ -2,6 +2,8 @@ object Deps {
     const val ANDROIDX_CORE_KTX = "androidx.core:core-ktx:${DepsVersions.CORE_KTX}"
     const val ANDROIDX_LIFECYCLE_RUNTIME_KTX = "androidx.lifecycle:lifecycle-runtime-ktx:${DepsVersions.LIFECYCLE_RUNTIME_KTX}"
     const val ANDROIDX_ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${DepsVersions.ACTIVITY_COMPOSE}"
+    const val ANDROIDX_ACTIVITY = "androidx.activity:activity-ktx:${DepsVersions.ACTIVITY}"
+    const val APPCOMPAT = "androidx.appcompat:appcompat:${DepsVersions.APPCOMPAT}"
     const val ANDROIDX_COMPOSE_BOM = "androidx.compose:compose-bom:${DepsVersions.COMPOSE_BOM}"
     const val ANDROIDX_UI = "androidx.compose.ui:ui:${DepsVersions.COMPOSE_UI}"
     const val ANDROIDX_UI_GRAPHICS = "androidx.compose.ui:ui-graphics:${DepsVersions.COMPOSE_UI}"

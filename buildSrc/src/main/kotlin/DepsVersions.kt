@@ -4,6 +4,8 @@ object DepsVersions {
     const val CORE_KTX = "1.16.0"
     const val LIFECYCLE_RUNTIME_KTX = "2.9.2"
     const val ACTIVITY_COMPOSE = "1.10.1"
+    const val ACTIVITY = "1.11.0"
+    const val APPCOMPAT = "1.7.1"
     const val COMPOSE_BOM = "2025.07.00"
     const val COMPOSE_UI = "1.8.3"
     const val MATERIAL3 = "1.3.2"
