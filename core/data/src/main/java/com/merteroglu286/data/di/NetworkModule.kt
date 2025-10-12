@@ -17,7 +17,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Call
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -54,8 +53,8 @@ class NetworkModule {
         @Named(LOGGING_INTERCEPTOR_TAG) okHttpLoggingInterceptor: Interceptor,
         @Named(AUTHENTICATION_INTERCEPTOR_TAG) authenticationInterceptor: Interceptor,
         @Named(CONNECTIVITY_INTERCEPTOR_TAG) connectivityInterceptor: Interceptor,
-        okHttpClientProvider: OkHttpClientProvider
-    ): Call.Factory {
+        okHttpClientProvider: OkHttpClientProviderInterface
+    ): OkHttpClient {
         return okHttpClientProvider.getOkHttpClient(BuildConfig.PIN_CERTIFICATE)
             .addInterceptor(headerInterceptor)
             .addInterceptor(okHttpLoggingInterceptor)
@@ -75,7 +74,7 @@ class NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val builder = Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("https://your-api.com")
             .client(okHttpClient)
 
         return builder.build()
