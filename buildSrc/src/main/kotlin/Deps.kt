@@ -10,7 +10,12 @@ object Deps {
     const val ANDROIDX_UI_TOOLING = "androidx.compose.ui:ui-tooling:${DepsVersions.COMPOSE_UI}"
     const val ANDROIDX_UI_TOOLING_PREVIEW = "androidx.compose.ui:ui-tooling-preview:${DepsVersions.COMPOSE_UI}"
     const val MATERIAL3 = "androidx.compose.material3:material3:${DepsVersions.MATERIAL3}"
-    const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${DepsVersions.NAVIGATION_COMPOSE}"
+
+    const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${DepsVersions.NAVIGATION}"
+    const val NAVIGATION_UI_KTX = "androidx.navigation:navigation-ui-ktx:${DepsVersions.NAVIGATION}"
+    const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${DepsVersions.NAVIGATION}"
+
+    const val GSON = "com.google.code.gson:gson:${DepsVersions.GSON}"
 
     const val HILT_ANDROID = "com.google.dagger:hilt-android:${DepsVersions.HILT}"
     const val HILT_COMPILER = "com.google.dagger:hilt-compiler:${DepsVersions.HILT}"

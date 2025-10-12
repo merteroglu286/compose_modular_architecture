@@ -11,6 +11,10 @@ fun DependencyHandler.androidx(){
     implementation(Deps.ANDROIDX_UI_GRAPHICS)
     implementation(Deps.ANDROIDX_UI_TOOLING_PREVIEW)
     implementation(Deps.MATERIAL3)
+    implementation(Deps.NAVIGATION_FRAGMENT_KTX)
+    implementation(Deps.NAVIGATION_UI_KTX)
+    implementation(Deps.NAVIGATION_COMPOSE)
+    implementation(Deps.GSON)
 }
 
 fun DependencyHandler.room(){
@@ -63,6 +67,10 @@ fun DependencyHandler.protoDataStoreModule(){
 
 fun DependencyHandler.domainModule(){
     moduleImplementation(Modules.DOMAIN)
+}
+
+fun DependencyHandler.navigatorModule(){
+    moduleImplementation(Modules.NAVIGATOR)
 }
 
 fun DependencyHandler.authModule(){

@@ -12,7 +12,7 @@ object DepsVersions {
     const val JUNIT = "4.13.2"
     const val JUNIT_VERSION = "1.3.0"
     const val ESPRESSO_CORE = "3.7.0"
-    const val NAVIGATION_COMPOSE = "2.9.3"
+    const val NAVIGATION = "2.9.5"
     const val HILT = "2.56.2"
     const val HILT_COMPOSE = "1.2.0"
     const val KSP = "2.2.10-2.0.2"
@@ -25,4 +25,5 @@ object DepsVersions {
     const val PROTOBUF_JAVA_LITE = "4.32.0"
     const val PROTOBUF_KOTLIN_LITE = "4.32.0"
     const val PROTOC = "4.32.0"
+    const val GSON = "2.13.2"
 }
