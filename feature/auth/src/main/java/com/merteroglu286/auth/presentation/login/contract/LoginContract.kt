@@ -1,34 +1,31 @@
 package com.merteroglu286.auth.presentation.login.contract
 
-import com.merteroglu286.auth.presentation.login.LoginError
+import com.merteroglu286.auth.presentation.login.error.LoginError
 import com.merteroglu286.domain.model.ErrorMessage
 
-// LoginInput
-// Kullanıcı etkileşimleri
-sealed class LoginEvent {
-    data class UsernameChanged(val username: String) : LoginEvent()
-    data class PasswordChanged(val password: String) : LoginEvent()
-    data object OnLoginClick : LoginEvent()
-    data object OnRegisterClick : LoginEvent()
+sealed class LoginInput {
+    data class UserNameUpdated(val username: String) : LoginInput()
+    data class PasswordUpdated(val password: String) : LoginInput()
+    data object LoginButtonClicked : LoginInput()
+    data object RegisterButtonClicked : LoginInput()
 }
 
-// LoginOutpu
-// Tek seferlik UI etkileri (navigasyon, hata mesajı vb.)
-sealed class LoginEffect {
-    data object NavigateToMain : LoginEffect()
-    data object NavigateToRegister : LoginEffect()
-    data class ShowError(val error: ErrorMessage) : LoginEffect()
+sealed class LoginOutput {
+    data object NavigateToMain : LoginOutput()
+    data object NavigateToRegister : LoginOutput()
+    data class ShowError(val errorMessage: ErrorMessage) : LoginOutput()
 }
 
-// LoginViewState
-// UI’nin güncel durumu
-data class LoginUiState(
-    val username: String = "",
+data class LoginViewState(
+    val userName: String = "",
     val password: String = "",
     val isLoginButtonEnabled: Boolean = false,
-    val usernameError: LoginError = LoginError.NoEntry,
-    val passwordError: LoginError = LoginError.NoEntry
+    val userNameError: LoginError = LoginError.NoEntry,
+    val passwordError: LoginError = LoginError.NoEntry,
 ) {
-    fun showUsernameError() = usernameError != LoginError.NoError && usernameError != LoginError.NoEntry
-    fun showPasswordError() = passwordError != LoginError.NoError && passwordError != LoginError.NoEntry
+    fun showPasswordError() =
+        passwordError != LoginError.NoError && passwordError != LoginError.NoEntry
+
+    fun showUsernameError() =
+        userNameError != LoginError.NoError && userNameError != LoginError.NoEntry
 }

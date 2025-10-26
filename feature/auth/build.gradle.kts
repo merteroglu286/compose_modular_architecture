@@ -13,6 +13,7 @@ dependencies {
 
     domainModule()
     dataModule()
+    presentationModule()
 
     androidx()
     hilt()

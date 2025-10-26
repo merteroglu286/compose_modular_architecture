@@ -5,13 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,75 +23,87 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.merteroglu286.auth.R
-import com.merteroglu286.auth.presentation.login.contract.LoginEffect
-import com.merteroglu286.auth.presentation.login.contract.LoginEvent
-import com.merteroglu286.auth.presentation.login.contract.LoginUiState
+import com.merteroglu286.auth.presentation.login.contract.LoginInput
+import com.merteroglu286.auth.presentation.login.contract.LoginOutput
+import com.merteroglu286.auth.presentation.login.contract.LoginViewState
 import com.merteroglu286.auth.presentation.login.viewmodel.LoginViewModel
+import com.merteroglu286.presentation.StateRenderer
 
 @Composable
-fun LoginScreen(uiState: LoginUiState, loginViewModel: LoginViewModel) {
+fun LoginScreen(loginViewModel: LoginViewModel) {
+    val stateRenderer by loginViewModel.stateRendererFlow.collectAsState()
+    // React to viewOutput events
 
     LaunchedEffect(loginViewModel) {
-        loginViewModel.effect.collect { effect ->
-            when (effect) {
-                is LoginEffect.NavigateToMain -> {
-                    // Navigate to main screen
-                }
-
-                is LoginEffect.NavigateToRegister -> {
-                    // Navigate to register screen
-                }
-
-                is LoginEffect.ShowError -> {
-                    // Show error message
-                }
+        loginViewModel.viewOutput.collect { output ->
+            when (output) {
+                is LoginOutput.NavigateToMain -> TODO()
+                is LoginOutput.NavigateToRegister -> TODO()
+                is LoginOutput.ShowError -> TODO()
             }
         }
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CustomTextField(
-                label = stringResource(R.string.username),
-                value = uiState.username,
-                errorText = stringResource(id = uiState.usernameError.getErrorMessage()),
-                showError = uiState.showUsernameError()
-            ) { username ->
-                loginViewModel.onEvent(LoginEvent.UsernameChanged(username))
-            }
+    // State Renderer
 
-            Spacer(modifier = Modifier.padding(16.dp))
-
-            CustomTextField(
-                label = stringResource(R.string.password),
-                value = uiState.password,
-                errorText = stringResource(id = uiState.passwordError.getErrorMessage()),
-                showError = uiState.showPasswordError()
-            ) { password ->
-                loginViewModel.onEvent(LoginEvent.PasswordChanged(password))
-            }
-
-            Spacer(modifier = Modifier.padding(16.dp))
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    loginViewModel.login()
-                }
-            ) {
-                Text("Login")
-            }
+    StateRenderer.of(statRenderer = stateRenderer, retryAction = { loginViewModel.login() }) {
+        onUiState { updatedState ->
+            ScreeUiContent(updatedState, loginViewModel)
+        }
+        onLoadingState { _ ->
+            // ScreeUiContent(updatedState, loginViewModel)
+        }
+        onSuccessState {
+            println(it.username)
+        }
+        onEmptyState {
+        }
+        onErrorState { _ ->
+            // ScreeUiContent(updatedState, loginViewModel)
         }
     }
 }
 
+@Composable
+fun ScreeUiContent(loginViewState: LoginViewState, loginViewModel: LoginViewModel) {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            CustomTextField(
+                label = stringResource(id = R.string.username),
+                value = loginViewState.userName,
+                errorText = stringResource(id = loginViewState.userNameError.getErrorMessage()),
+                showError = loginViewState.showUsernameError(),
+            ) { userName ->
+                loginViewModel.setInput(LoginInput.UserNameUpdated(userName))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomTextField(
+                label = stringResource(id = R.string.password),
+                value = loginViewState.password,
+                errorText = stringResource(id = loginViewState.passwordError.getErrorMessage()),
+                showError = loginViewState.showPasswordError(),
+            ) { password ->
+                loginViewModel.setInput(LoginInput.PasswordUpdated(password))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { loginViewModel.login() },
+            ) {
+                Text(text = "Login")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            TextButton(onClick = { loginViewModel.setInput(LoginInput.RegisterButtonClicked) }) {
+                Text(text = "Sign up Now!")
+            }
+        }
+    }
+}
 
 @Composable
 fun CustomTextField(
@@ -96,22 +112,23 @@ fun CustomTextField(
     showError: Boolean,
     errorText: String,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    onChanged: (String) -> Unit
+    onChanged: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = { onChanged(it) },
         label = { Text(text = label) },
-        isError = showError,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        visualTransformation = visualTransformation
+        isError = showError,
+        visualTransformation = visualTransformation,
     )
     if (showError) {
         Text(
-            text = errorText, color = Color.Red,
-            modifier = Modifier.padding(all = 8.dp)
+            text = errorText,
+            color = Color.Red,
+            modifier = Modifier.padding(all = 8.dp),
         )
     }
 }

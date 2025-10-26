@@ -69,6 +69,10 @@ fun DependencyHandler.domainModule(){
     moduleImplementation(Modules.DOMAIN)
 }
 
+fun DependencyHandler.presentationModule(){
+    moduleImplementation(Modules.PRESENTATION)
+}
+
 fun DependencyHandler.navigatorModule(){
     moduleImplementation(Modules.NAVIGATOR)
 }

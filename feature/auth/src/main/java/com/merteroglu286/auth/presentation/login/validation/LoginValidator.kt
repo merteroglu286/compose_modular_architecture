@@ -1,6 +1,6 @@
 package com.merteroglu286.auth.presentation.login.validation
 
-import com.merteroglu286.auth.presentation.login.LoginError
+import com.merteroglu286.auth.presentation.login.error.LoginError
 
 private const val USERNAME_LENGTH = 5
 private const val PASSWORD_MIN_LENGTH = 7
@@ -8,7 +8,7 @@ private const val PASSWORD_MAX_LENGTH = 10
 
 object LoginValidator {
 
-    fun usernameError(username: String): LoginError {
+    fun userNameError(username: String): LoginError {
         return when {
             username.isEmpty() -> LoginError.NoEntry
             !isValidUsernameLength(username) -> LoginError.InCorrectUsernameLength

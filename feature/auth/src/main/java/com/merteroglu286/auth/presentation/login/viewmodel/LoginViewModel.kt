@@ -2,77 +2,93 @@ package com.merteroglu286.auth.presentation.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.merteroglu286.auth.domain.model.User
 import com.merteroglu286.auth.domain.usecase.LoginUseCase
-import com.merteroglu286.auth.presentation.login.contract.LoginEvent
-import com.merteroglu286.auth.presentation.login.contract.LoginEffect
-import com.merteroglu286.auth.presentation.login.contract.LoginUiState
+import com.merteroglu286.auth.presentation.login.contract.LoginInput
+import com.merteroglu286.auth.presentation.login.contract.LoginOutput
+import com.merteroglu286.auth.presentation.login.contract.LoginViewState
+import com.merteroglu286.auth.presentation.login.error.LoginError
 import com.merteroglu286.auth.presentation.login.validation.LoginValidator
+import com.merteroglu286.presentation.StateRenderer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
-) : ViewModel() {
+class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState = _uiState.asStateFlow()
+    private var loginViewState = LoginViewState()
 
-    private val _effect = MutableSharedFlow<LoginEffect>()
-    val effect = _effect.asSharedFlow()
+    private val _stateRendererMutableState = MutableStateFlow<StateRenderer<LoginViewState, User>>(
+        StateRenderer.ScreenContent(loginViewState),
+    )
 
-    fun onEvent(event: LoginEvent) {
-        when (event) {
-            is LoginEvent.OnLoginClick -> login()
-            is LoginEvent.PasswordChanged -> updateState { copy(password = event.password) }
-            is LoginEvent.OnRegisterClick -> sendEffect(LoginEffect.NavigateToRegister)
-            is LoginEvent.UsernameChanged -> updateState { copy(username = event.username) }
+    val stateRendererFlow: StateFlow<StateRenderer<LoginViewState, User>> get() = _stateRendererMutableState
+
+    // output of viewmodel
+    private val _viewOutPut: Channel<LoginOutput> = Channel()
+    val viewOutput = _viewOutPut.receiveAsFlow()
+
+    fun setInput(input: LoginInput) {
+        when (input) {
+            is LoginInput.LoginButtonClicked -> login()
+            is LoginInput.PasswordUpdated -> updateState { copy(password = input.password) }
+            is LoginInput.RegisterButtonClicked -> sendOutput { LoginOutput.NavigateToRegister }
+            is LoginInput.UserNameUpdated -> updateState { copy(userName = input.username) }
         }
     }
 
-    private fun updateState(transform: LoginUiState.() -> LoginUiState) {
-        _uiState.update { current ->
-            val updated = current.transform()
-            updated.validate()
-        }
+    private fun updateState(updateState: LoginViewState.() -> LoginViewState) {
+        loginViewState = loginViewState.updateState()
+        validate()
     }
 
-    private fun LoginUiState.validate(): LoginUiState {
-        val usernameError = LoginValidator.usernameError(username)
-        val passwordError = LoginValidator.passwordError(password)
-        val isEnabled = LoginValidator.canDoLogin(usernameError, passwordError)
+    private fun validate() {
+        val userNameError: LoginError = LoginValidator.userNameError(loginViewState.userName)
+        val passwordError: LoginError = LoginValidator.passwordError(loginViewState.password)
+        val isLoginButtonEnabled: Boolean = LoginValidator.canDoLogin(userNameError, passwordError)
 
-        return copy(
-            usernameError = usernameError,
+        loginViewState = loginViewState.copy(
+            isLoginButtonEnabled = isLoginButtonEnabled,
+            userNameError = userNameError,
             passwordError = passwordError,
-            isLoginButtonEnabled = isEnabled
         )
+
+        val newStateRenderer = StateRenderer.ScreenContent<LoginViewState, User>(loginViewState)
+        _stateRendererMutableState.value = newStateRenderer
     }
 
-
-    private fun sendEffect(effect: LoginEffect) {
+    private fun sendOutput(action: () -> LoginOutput) {
         viewModelScope.launch {
-            _effect.emit(effect)
+            _viewOutPut.send(action())
         }
     }
 
     fun login() {
         viewModelScope.launch {
+            // loading popup state
+            val newStateRenderer = StateRenderer.LoadingFullScreen<LoginViewState, User>(loginViewState)
+            _stateRendererMutableState.value = newStateRenderer
             loginUseCase.execute(
                 LoginUseCase.Input(
-                    username = uiState.value.username,
-                    password = uiState.value.password
+                    username = loginViewState.userName,
+                    password = loginViewState.password,
                 ),
-                success = { user ->
+                success = {
+                    // loading popup state
+                    val newStateRenderer = StateRenderer.Success<LoginViewState, User>(it)
+                    _stateRendererMutableState.value = newStateRenderer
                 },
                 error = {
-                }
+                    // loading popup state
+                    val newStateRenderer =
+                        StateRenderer.ErrorFullScreen<LoginViewState, User>(loginViewState, it)
+                    _stateRendererMutableState.value = newStateRenderer
+                },
             )
         }
     }

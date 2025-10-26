@@ -1,4 +1,4 @@
-package com.merteroglu286.auth.presentation.login
+package com.merteroglu286.auth.presentation.login.error
 
 import com.merteroglu286.auth.R
 

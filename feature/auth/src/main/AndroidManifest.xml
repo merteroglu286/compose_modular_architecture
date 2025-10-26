@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".presentation.AuthActivity"
+            android:name=".presentation.login.view.AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
