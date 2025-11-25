@@ -34,7 +34,7 @@ import com.merteroglu286.domain.model.ErrorMessage
 import com.merteroglu286.presentation.R
 
 @Composable
-fun renderErrorPopup(errorMessage: ErrorMessage, retryAction: () -> Unit) {
+fun ErrorPopup(errorMessage: ErrorMessage, retryAction: () -> Unit) {
     var showDialog by remember { mutableStateOf(true) }
 
     fun dismissDialog() {

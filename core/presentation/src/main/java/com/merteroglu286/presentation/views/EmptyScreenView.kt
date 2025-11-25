@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.merteroglu286.presentation.R
 
 @Composable
-fun renderEmptyScreen(emptyMessageId: Int) {
+fun EmptyScreen(emptyMessageId: Int) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,

@@ -1,3 +1,4 @@
+/*
 package com.merteroglu286.presentation
 
 import androidx.annotation.StringRes
@@ -114,4 +115,26 @@ sealed class StateRenderer<out S, O> {
             return statRenderer
         }
     }
+}*/
+
+package com.merteroglu286.presentation
+
+import androidx.annotation.StringRes
+import com.merteroglu286.domain.model.ErrorMessage
+
+sealed class ScreenState<out S, O> {
+    data class Content<S, O>(val uiState: S) : ScreenState<S, O>()
+    data class Loading<S, O>(
+        val uiState: S,
+        @StringRes val loadingMessage: Int
+    ) : ScreenState<S, O>()
+    data class Error<S, O>(
+        val uiState: S,
+        val errorMessage: ErrorMessage
+    ) : ScreenState<S, O>()
+    data class Empty<S, O>(
+        val uiState: S,
+        @StringRes val emptyMessage: Int
+    ) : ScreenState<S, O>()
+    data class Success<S, O>(val output: O) : ScreenState<S, O>()
 }

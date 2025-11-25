@@ -23,7 +23,7 @@ import com.merteroglu286.domain.model.ErrorMessage
 import com.merteroglu286.presentation.R
 
 @Composable
-fun renderErrorFullScreen(errorMessage: ErrorMessage, retryAction: () -> Unit) {
+fun ErrorFullScreen(errorMessage: ErrorMessage, retryAction: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
