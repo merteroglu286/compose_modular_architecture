@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -73,8 +75,12 @@ class RoutingActivity : ComponentActivity() {
                 modifier = Modifier.padding(innerPadding),
                 navController = navController,
                 startDestination = Screens.LoginScreenRoute.route,
-                enterTransition = { fadeIn(animationSpec = tween(500)) },
-                exitTransition = { fadeOut(animationSpec = tween(500)) }
+//                enterTransition = { fadeIn(animationSpec = tween(500)) },
+//                exitTransition = { fadeOut(animationSpec = tween(500)) }
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
             ) {
                 addComposableDestinations(appNavigator, navController)
             }
