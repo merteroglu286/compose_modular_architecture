@@ -15,6 +15,7 @@ fun DependencyHandler.androidx(){
     implementation(Deps.NAVIGATION_UI_KTX)
     implementation(Deps.NAVIGATION_COMPOSE)
     implementation(Deps.GSON)
+    implementation(Deps.WORK_RUNTIME)
 }
 
 fun DependencyHandler.room(){
@@ -37,11 +38,20 @@ fun DependencyHandler.protoDataStore(){
 
 fun DependencyHandler.hilt(){
     implementation(Deps.HILT_ANDROID)
-//    implementation(Deps.HILT_COMPOSE)
-//    implementation(Deps.HILT_NAVIGATION)
+    implementation(Deps.HILT_COMPOSE)
+    implementation(Deps.HILT_NAVIGATION)
     ksp(Deps.HILT_COMPILER)
 //    ksp(Deps.HILT_AGP)
 }
+
+fun DependencyHandler.kotlinx(){
+    implementation(Deps.KOTLIN_SERIALIZATION)
+}
+
+fun DependencyHandler.coroutines() {
+    implementation(Deps.COROUTINES_CORE)
+}
+
 
 fun DependencyHandler.okHttp(){
     implementation(Deps.OKHTTP)
@@ -79,6 +89,14 @@ fun DependencyHandler.navigatorModule(){
 
 fun DependencyHandler.authModule(){
     moduleImplementation(Modules.AUTH)
+}
+
+fun DependencyHandler.signUpModule(){
+    moduleImplementation(Modules.SIGN_UP)
+}
+
+fun DependencyHandler.homeModule(){
+    moduleImplementation(Modules.HOME)
 }
 
 fun DependencyHandler.testDeps(){

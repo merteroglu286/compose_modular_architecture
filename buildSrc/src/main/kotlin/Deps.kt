@@ -11,6 +11,8 @@ object Deps {
     const val ANDROIDX_UI_TOOLING_PREVIEW = "androidx.compose.ui:ui-tooling-preview:${DepsVersions.COMPOSE_UI}"
     const val MATERIAL3 = "androidx.compose.material3:material3:${DepsVersions.MATERIAL3}"
 
+    const val WORK_RUNTIME = "androidx.work:work-runtime-ktx:${DepsVersions.RUN_TIME}"
+
     const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${DepsVersions.NAVIGATION}"
     const val NAVIGATION_UI_KTX = "androidx.navigation:navigation-ui-ktx:${DepsVersions.NAVIGATION}"
     const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${DepsVersions.NAVIGATION}"
@@ -36,6 +38,7 @@ object Deps {
     const val DATA_STORE = "androidx.datastore:datastore:${DepsVersions.DATA_STORE}"
     const val KOTLIN_COLLECTIONS = "org.jetbrains.kotlinx:kotlinx-collections-immutable:${DepsVersions.KOTLIN_COLLECTIONS}"
     const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:${DepsVersions.KOTLIN_SERIALIZATION}"
+    const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${DepsVersions.COROUTINES_CORE}"
 
     const val PROTOBUF_JAVA_LITE = "com.google.protobuf:protobuf-javalite:${DepsVersions.PROTOBUF_JAVA_LITE}"
     const val PROTOBUF_KOTLIN_LITE = "com.google.protobuf:protobuf-kotlin-lite:${DepsVersions.PROTOBUF_KOTLIN_LITE}"

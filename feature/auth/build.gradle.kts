@@ -1,5 +1,6 @@
 plugins {
     id(BuildPlugins.ANDROID_LIBRARY)
+    id(BuildPlugins.KSP)
     id(BuildPlugins.DAGGER_HILT_ANDROID)
 }
 
@@ -14,6 +15,7 @@ dependencies {
     domainModule()
     dataModule()
     presentationModule()
+    navigatorModule()
 
     androidx()
     hilt()

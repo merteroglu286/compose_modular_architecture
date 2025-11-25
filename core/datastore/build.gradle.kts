@@ -12,6 +12,8 @@ dependencies {
 
     dataStore()
 
+    kotlinx()
+
     testDeps()
     testImplDeps()
     debugDeps()

@@ -22,8 +22,10 @@ object DepsVersions {
     const val DATA_STORE = "1.1.7"
     const val KOTLIN_COLLECTIONS = "0.4.0"
     const val KOTLIN_SERIALIZATION = "1.9.0"
+    const val COROUTINES_CORE = "1.10.2"
     const val PROTOBUF_JAVA_LITE = "4.32.0"
     const val PROTOBUF_KOTLIN_LITE = "4.32.0"
     const val PROTOC = "4.32.0"
     const val GSON = "2.13.2"
+    const val RUN_TIME = "2.11.0"
 }

@@ -2,7 +2,7 @@ package com.merteroglu286.auth.presentation.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.merteroglu286.auth.domain.model.User
+import com.merteroglu286.domain.model.User
 import com.merteroglu286.auth.domain.usecase.LoginUseCase
 import com.merteroglu286.auth.presentation.login.contract.LoginInput
 import com.merteroglu286.auth.presentation.login.contract.LoginOutput

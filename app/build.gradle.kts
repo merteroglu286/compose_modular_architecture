@@ -61,15 +61,19 @@ android {
 
 dependencies {
 
-    dataModule()
+    homeModule()
+    signUpModule()
     authModule()
+
     dataStoreModule()
     protoDataStoreModule()
-
+    navigatorModule()
     dataStore()
+    dataModule()
 
     androidx()
     hilt()
+    kotlinx()
 
     testDeps()
     testImplDeps()

@@ -3,7 +3,7 @@ package com.merteroglu286.auth.data.source
 import com.merteroglu286.auth.data.requests.LoginRequest
 import com.merteroglu286.auth.data.service.LoginService
 import com.merteroglu286.auth.data.mapper.LoginMapper
-import com.merteroglu286.auth.domain.model.User
+import com.merteroglu286.domain.model.User
 import com.merteroglu286.data.mapper.toDomain
 import com.merteroglu286.domain.result.OutCome
 import com.merteroglu286.data.source.NetworkDataSource

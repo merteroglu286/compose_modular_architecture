@@ -1,6 +1,7 @@
 plugins {
     id(BuildPlugins.ANDROID_LIBRARY)
     id(BuildPlugins.GOOGLE_PROTOBUF)
+    id(BuildPlugins.KSP)
     id(BuildPlugins.DAGGER_HILT_ANDROID)
 }
 

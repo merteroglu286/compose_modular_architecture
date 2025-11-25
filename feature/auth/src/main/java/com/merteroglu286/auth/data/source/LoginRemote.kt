@@ -1,6 +1,6 @@
 package com.merteroglu286.auth.data.source
 
-import com.merteroglu286.auth.domain.model.User
+import com.merteroglu286.domain.model.User
 import com.merteroglu286.domain.result.OutCome
 
 interface LoginRemote {

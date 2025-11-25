@@ -10,6 +10,9 @@ android {
 
 dependencies {
 
+    kotlinx()
+    coroutines()
+
     testDeps()
     testImplDeps()
     debugDeps()
