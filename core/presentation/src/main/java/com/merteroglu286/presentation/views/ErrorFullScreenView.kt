@@ -23,7 +23,7 @@ import com.merteroglu286.domain.model.ErrorMessage
 import com.merteroglu286.presentation.R
 
 @Composable
-fun ErrorFullScreen(errorMessage: ErrorMessage, retryAction: () -> Unit) {
+fun ErrorFullScreenView(errorMessage: ErrorMessage, retryAction: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -52,7 +52,7 @@ fun ErrorFullScreen(errorMessage: ErrorMessage, retryAction: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-            Button(onClick = { retryAction }) {
+            Button(onClick = { retryAction() }) {
                 Text(text = stringResource(id = R.string.retry_again))
             }
         }

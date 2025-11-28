@@ -6,17 +6,16 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 
-const val BASE_URL = "https://example.com"
 const val REFRESH_TOKEN = "refreshToken"
 
 interface SessionService {
 
-    @GET("$BASE_URL/Auth/GetSession")
+    @GET("/Auth/GetSession")
     suspend fun getTokens(
         @Header(REFRESH_TOKEN) refreshToken: String
     ): Response<TokenResponse>
 
-    @DELETE("$BASE_URL/Auth/DeleteSession")
+    @DELETE("/Auth/DeleteSession")
     suspend fun logout(
         @Header(REFRESH_TOKEN) refreshToken: String
     ): Response<Unit>

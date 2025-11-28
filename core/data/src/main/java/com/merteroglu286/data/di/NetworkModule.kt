@@ -20,6 +20,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -74,9 +75,9 @@ class NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val builder = Retrofit.Builder()
-            .baseUrl("https://your-api.com")
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
-
+            .addConverterFactory(GsonConverterFactory.create())
         return builder.build()
     }
 

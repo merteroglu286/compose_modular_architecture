@@ -1,60 +1,59 @@
-/*
 package com.merteroglu286.presentation
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import com.merteroglu286.domain.model.ErrorMessage
-import com.merteroglu286.presentation.views.renderEmptyScreen
-import com.merteroglu286.presentation.views.renderErrorFullScreen
-import com.merteroglu286.presentation.views.renderErrorPopup
-import com.merteroglu286.presentation.views.renderLoadingFullScreen
-import com.merteroglu286.presentation.views.renderLoadingPopup
+import com.merteroglu286.presentation.views.EmptyScreenView
+import com.merteroglu286.presentation.views.ErrorFullScreenView
+import com.merteroglu286.presentation.views.ErrorPopupView
+import com.merteroglu286.presentation.views.LoadingFullScreenView
+import com.merteroglu286.presentation.views.LoadingPopupView
 
-sealed class StateRenderer<out S, O> {
+sealed class ScreenState<out S, O> {
     // S for ViewState and O for Output
 
     // Content State
-    class ScreenContent<S, O>(val viewState: S) : StateRenderer<S, O>()
+    class ScreenContent<S, O>(val viewState: S) : ScreenState<S, O>()
 
     // Loading States
     // 1- Popup Loading State
     data class LoadingPopup<S, O>(
         val viewState: S,
         @StringRes val loadingMessage: Int = R.string.loading,
-    ) : StateRenderer<S, O>()
+    ) : ScreenState<S, O>()
 
     // 2- Full Screen Loading State
     data class LoadingFullScreen<S, O>(
         val viewState: S,
         @StringRes val loadingMessage: Int = R.string.loading,
-    ) : StateRenderer<S, O>()
+    ) : ScreenState<S, O>()
 
     // Error States
     // 1- Popup Error State
     data class ErrorPopup<S, O>(
         val viewState: S,
         val errorMessage: ErrorMessage,
-    ) : StateRenderer<S, O>()
+    ) : ScreenState<S, O>()
 
     // 2- Full Screen Error State
     data class ErrorFullScreen<S, O>(
         val viewState: S,
         val errorMessage: ErrorMessage,
-    ) : StateRenderer<S, O>()
+    ) : ScreenState<S, O>()
 
     // Empty State
     data class Empty<S, O>(
         val viewState: S,
         @StringRes val emptyMessage: Int = R.string.no_data,
-    ) : StateRenderer<S, O>()
+    ) : ScreenState<S, O>()
 
     // Success State
-    data class Success<S, O>(val output: O) : StateRenderer<S, O>()
+    data class Success<S, O>(val output: O) : ScreenState<S, O>()
 
     // ScreenContent
 
     @Composable
-    fun onUiState(action: @Composable (S) -> Unit): StateRenderer<S, O> {
+    fun onUiState(action: @Composable (S) -> Unit): ScreenState<S, O> {
         if (this is ScreenContent) {
             action(viewState)
         }
@@ -62,7 +61,7 @@ sealed class StateRenderer<out S, O> {
     }
 
     @Composable
-    fun onLoadingState(action: @Composable (S) -> Unit): StateRenderer<S, O> {
+    fun onLoadingState(action: @Composable (S) -> Unit): ScreenState<S, O> {
         if (this is LoadingPopup) {
             action(viewState)
         } else if (this is LoadingFullScreen) {
@@ -71,7 +70,7 @@ sealed class StateRenderer<out S, O> {
         return this
     }
 
-    fun onSuccessState(action: (O) -> Unit): StateRenderer<S, O> {
+    fun onSuccessState(action: (O) -> Unit): ScreenState<S, O> {
         if (this is Success) {
             action(output)
         }
@@ -79,7 +78,7 @@ sealed class StateRenderer<out S, O> {
     }
 
     @Composable
-    fun onErrorState(action: @Composable (S) -> Unit): StateRenderer<S, O> {
+    fun onErrorState(action: @Composable (S) -> Unit): ScreenState<S, O> {
         if (this is ErrorPopup) {
             action(viewState)
         } else if (this is ErrorFullScreen) {
@@ -88,7 +87,7 @@ sealed class StateRenderer<out S, O> {
         return this
     }
 
-    fun onEmptyState(action: () -> Unit): StateRenderer<S, O> {
+    fun onEmptyState(action: () -> Unit): ScreenState<S, O> {
         if (this is Empty) {
             action()
         }
@@ -99,24 +98,25 @@ sealed class StateRenderer<out S, O> {
         @Composable
         fun <S, O> of(
             retryAction: () -> Unit = {},
-            statRenderer: StateRenderer<S, O>,
-            blocK: @Composable StateRenderer<S, O>.() -> Unit,
-        ): StateRenderer<S, O> {
-            statRenderer.blocK() // show this first before doing any thing
+            screenState: ScreenState<S, O>,
+            blocK: @Composable ScreenState<S, O>.() -> Unit,
+        ): ScreenState<S, O> {
+            screenState.blocK() // show this first before doing any thing
 
-            when (statRenderer) {
-                is Empty -> renderEmptyScreen(statRenderer.emptyMessage)
-                is ErrorFullScreen -> renderErrorFullScreen(statRenderer.errorMessage, retryAction)
-                is ErrorPopup -> renderErrorPopup(statRenderer.errorMessage, retryAction)
-                is LoadingFullScreen -> renderLoadingFullScreen(statRenderer.loadingMessage)
-                is LoadingPopup -> renderLoadingPopup(statRenderer.loadingMessage)
+            when (screenState) {
+                is Empty -> EmptyScreenView(screenState.emptyMessage)
+                is ErrorFullScreen -> ErrorFullScreenView(screenState.errorMessage, retryAction)
+                is ErrorPopup -> ErrorPopupView(screenState.errorMessage, retryAction)
+                is LoadingFullScreen -> LoadingFullScreenView(screenState.loadingMessage)
+                is LoadingPopup -> LoadingPopupView(screenState.loadingMessage)
                 else -> {}
             }
-            return statRenderer
+            return screenState
         }
     }
-}*/
+}
 
+/*
 package com.merteroglu286.presentation
 
 import androidx.annotation.StringRes
@@ -137,4 +137,4 @@ sealed class ScreenState<out S, O> {
         @StringRes val emptyMessage: Int
     ) : ScreenState<S, O>()
     data class Success<S, O>(val output: O) : ScreenState<S, O>()
-}
+}*/

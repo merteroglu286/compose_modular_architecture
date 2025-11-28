@@ -118,7 +118,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     private var loginUiState = LoginUiState()
     private val _screenStateFlow = MutableStateFlow<ScreenState<LoginUiState, User>>(
-        ScreenState.Content(loginUiState)
+        ScreenState.ScreenContent(loginUiState)
     )
     val screenStateFlow: StateFlow<ScreenState<LoginUiState, User>> get() = _screenStateFlow
 
@@ -151,7 +151,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             userNameError = userNameError,
             passwordError = passwordError,
         )
-        _screenStateFlow.value = ScreenState.Content(loginUiState)
+        _screenStateFlow.value = ScreenState.ScreenContent(loginUiState)
     }
 
     private fun sendEffect(effect: LoginEffect) {
@@ -160,7 +160,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     fun login() {
         viewModelScope.launch {
-            _screenStateFlow.value = ScreenState.Loading(loginUiState, R.string.loading)
+            _screenStateFlow.value = ScreenState.LoadingFullScreen(loginUiState, R.string.loading)
             loginUseCase.execute(
                 LoginUseCase.Input(loginUiState.userName, loginUiState.password),
                 success = { user ->
@@ -168,7 +168,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                     sendEffect(LoginEffect.NavigateToMain(user))
                 },
                 error = { errorMessage ->
-                    _screenStateFlow.value = ScreenState.Error(loginUiState, errorMessage)
+                    _screenStateFlow.value = ScreenState.ErrorFullScreen(loginUiState, errorMessage)
                     sendEffect(LoginEffect.ShowError(errorMessage))
                 }
             )

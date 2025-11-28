@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingFullScreen(loadingMessage: Int){
+fun LoadingFullScreenView(loadingMessage: Int){
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

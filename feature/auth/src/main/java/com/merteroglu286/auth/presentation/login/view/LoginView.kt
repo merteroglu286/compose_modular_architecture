@@ -185,9 +185,6 @@ import com.merteroglu286.navigator.core.AppNavigator
 import com.merteroglu286.navigator.destinations.HomeDestination
 import com.merteroglu286.navigator.destinations.Screens
 import com.merteroglu286.presentation.ScreenState
-import com.merteroglu286.presentation.views.EmptyScreen
-import com.merteroglu286.presentation.views.ErrorFullScreen
-import com.merteroglu286.presentation.views.LoadingFullScreen
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -200,7 +197,8 @@ fun LoginScreen(appNavigator: AppNavigator) {
         loginViewModel.effectFlow.collect { effect ->
             when (effect) {
                 is LoginEffect.NavigateToMain -> {
-                    val encodedUserJson = URLEncoder.encode(effect.user.toJson(), StandardCharsets.UTF_8.toString())
+                    val encodedUserJson =
+                        URLEncoder.encode(effect.user.toJson(), StandardCharsets.UTF_8.toString())
                     appNavigator.navigate(
                         HomeDestination.createHome(
                             user = encodedUserJson,
@@ -209,13 +207,39 @@ fun LoginScreen(appNavigator: AppNavigator) {
                         ),
                     )
                 }
+
                 is LoginEffect.NavigateToRegister -> appNavigator.navigate(Screens.SignUpScreenRoute.route)
                 is LoginEffect.ShowError -> {/* UI'de error göstermek için, Snackbar vs. */}
             }
         }
     }
 
-    when (screenState) {
+    ScreenState.of(screenState = screenState, retryAction = { loginViewModel.login() }) {
+        onUiState { updatedState ->
+            ScreeUiContent(updatedState, loginViewModel)
+        }
+        onLoadingState { _ ->
+
+        }
+        onSuccessState { user ->
+            val encodedUserJson =
+                URLEncoder.encode(user.toJson(), StandardCharsets.UTF_8.toString())
+            appNavigator.navigate(
+                HomeDestination.createHome(
+                    user = encodedUserJson,
+                    age = 36,
+                    userName = user.userName
+                ),
+            )
+        }
+        onEmptyState {
+        }
+        onErrorState { _ ->
+
+        }
+    }
+
+    /*when (screenState) {
         is ScreenState.Loading -> {
             val loading = screenState as ScreenState.Loading<*, *>
             LoadingFullScreen(loading.loadingMessage)
@@ -235,7 +259,7 @@ fun LoginScreen(appNavigator: AppNavigator) {
             val content = screenState as ScreenState.Content<LoginUiState, *>
             ScreeUiContent(content.uiState, loginViewModel)
         }
-    }
+    }*/
 }
 
 @Composable

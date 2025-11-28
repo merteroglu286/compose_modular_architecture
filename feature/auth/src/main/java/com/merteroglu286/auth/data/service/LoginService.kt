@@ -6,9 +6,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-const val BASE_URL = "https//mydomain.com"
 interface LoginService {
 
-    @POST("$BASE_URL/login")
+    @POST("/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 }
