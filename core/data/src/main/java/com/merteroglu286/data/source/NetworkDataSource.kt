@@ -7,7 +7,7 @@ import com.merteroglu286.data.error.getErrorResponse
 import com.merteroglu286.data.interceptors.NoConnectivityException
 import com.merteroglu286.data.mapper.toDomain
 import com.merteroglu286.data.response.ErrorResponse
-import com.merteroglu286.domain.result.OutCome
+import com.merteroglu286.domain.result.Result
 import com.merteroglu286.data.source.DataSource.Companion.NO_INTERNET
 import com.merteroglu286.data.source.DataSource.Companion.SEE_OTHERS
 import com.merteroglu286.data.source.DataSource.Companion.SSL_PINNING
@@ -30,13 +30,13 @@ class NetworkDataSource<SERVICE>(
 
     suspend fun <R, T> performRequest(
         request: suspend SERVICE.(String) -> Response<R>,
-        onSuccess: suspend (R, Headers) -> OutCome<T> = { _, _ -> OutCome.empty() },
-        onRedirect: suspend (String, Int) -> OutCome<T> = { _, _ -> OutCome.empty() },
-        onEmpty: suspend () -> OutCome<T> = { OutCome.empty() },
-        onError: suspend (ErrorResponse, Int) -> OutCome<T> = { errorResponse, code ->
-            OutCome.error(errorResponse.toDomain(code))
+        onSuccess: suspend (R, Headers) -> Result<T> = { _, _ -> Result.empty() },
+        onRedirect: suspend (String, Int) -> Result<T> = { _, _ -> Result.empty() },
+        onEmpty: suspend () -> Result<T> = { Result.empty() },
+        onError: suspend (ErrorResponse, Int) -> Result<T> = { errorResponse, code ->
+            Result.error(errorResponse.toDomain(code))
         }
-    ): OutCome<T> {
+    ): Result<T> {
         try {
             val response = service.request(userIdProvider())
             val responseCode = response.code()

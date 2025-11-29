@@ -24,8 +24,9 @@ interface SessionDataStoreInterface {
     suspend fun getUserId(): String
     fun getUserIdFlow(): Flow<String>
 
-
     suspend fun getSession(): Session
     fun getSessionFlow(): Flow<Session>
 
+    suspend fun getIsUserLoggedIn() : Boolean
+    fun getIsUserLoggedInFlow() : Flow<Boolean>
 }

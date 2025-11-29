@@ -1,6 +1,7 @@
 package com.merteroglu286.protodatastore.manager.session
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import com.merteroglu286.proto.Session
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -92,6 +93,21 @@ class SessionDataStoreImpl(private val sessionDataStore: DataStore<Session>) :
     override fun getSessionFlow(): Flow<Session> {
         return sessionDataStore.data.map { session ->
             session
+        }
+    }
+
+    override suspend fun getIsUserLoggedIn(): Boolean {
+        val session = getSession()
+        return session.accessToken.isNotEmpty() &&
+                session.refreshToken.isNotEmpty() &&
+                session.userId.isNotEmpty()
+    }
+
+    override fun getIsUserLoggedInFlow(): Flow<Boolean> {
+        return sessionDataStore.data.map { session ->
+            session.accessToken.isNotEmpty() &&
+                    session.refreshToken.isNotEmpty() &&
+                    session.userId.isNotEmpty()
         }
     }
 

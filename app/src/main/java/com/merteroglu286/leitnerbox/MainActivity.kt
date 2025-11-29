@@ -81,9 +81,6 @@ class MainActivity : ComponentActivity() {
 
         println(counter)
     }
-
-    fun mainMainMainMainMainMainMainMainMainMainMainMainMainMain() {
-    }
 }
 
 @Composable
@@ -99,6 +96,9 @@ fun SettingsScreen(
         .collectAsState(initial = "")
 
     var accessTokenValue by remember { mutableStateOf("") }
+
+    val userLoggedInFlow by sessionDataStoreInterface.getIsUserLoggedInFlow()
+        .collectAsState(initial = "")
 
     Column(modifier = Modifier.padding(50.dp)) {
         Spacer(modifier = Modifier.height(16.dp))
@@ -117,7 +117,7 @@ fun SettingsScreen(
 
         Button(onClick = {
             scope.launch {
-                sessionDataStoreInterface.setAccessToken("Access Token " + System.currentTimeMillis())
+                sessionDataStoreInterface.setSession("Access Token","Refresh token", "user id")
             }
         }) {
             Text(text = "Insert")
@@ -133,6 +133,10 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Lat: ${location.lat} Lng: ${location.long}")
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "kullanıcı girişi: $userLoggedInFlow")
+
         Spacer(modifier = Modifier.height(16.dp))
         val newLocation = Location(37.123, 122.908)
 

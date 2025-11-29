@@ -3,14 +3,14 @@ package com.merteroglu286.domain.result
 import com.merteroglu286.domain.model.ErrorMessage
 import com.merteroglu286.domain.usecase.UseCase
 
-sealed class OutCome<T> {
+sealed class Result<T> {
     abstract fun isSuccess(): Boolean
 
     open fun errorMessage(): ErrorMessage? = null
 
     abstract suspend fun accept(useCase: UseCase<T>)
 
-    class Success<T>(val data: T) : OutCome<T>() {
+    class Success<T>(val data: T) : Result<T>() {
         override fun isSuccess(): Boolean = true
 
         override suspend fun accept(useCase: UseCase<T>) {
@@ -18,7 +18,7 @@ sealed class OutCome<T> {
         }
     }
 
-    class Error<T>(val errorMessage: ErrorMessage) : OutCome<T>() {
+    class Error<T>(val errorMessage: ErrorMessage) : Result<T>() {
         override fun isSuccess(): Boolean = false
 
         override fun errorMessage(): ErrorMessage = errorMessage
@@ -28,7 +28,7 @@ sealed class OutCome<T> {
         }
     }
 
-    class Empty<T>() : OutCome<T>() {
+    class Empty<T>() : Result<T>() {
         override fun isSuccess(): Boolean = true
 
         override suspend fun accept(useCase: UseCase<T>) {

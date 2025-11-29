@@ -1,7 +1,7 @@
 package com.merteroglu286.domain.usecase
 
 import com.merteroglu286.domain.model.ErrorMessage
-import com.merteroglu286.domain.result.OutCome
+import com.merteroglu286.domain.result.Result
 
 abstract class AsyncUseCase<I, R> : UseCase<R> {
     private lateinit var success: suspend (R) -> Unit
@@ -21,9 +21,9 @@ abstract class AsyncUseCase<I, R> : UseCase<R> {
         run(input).accept(this)
     }
 
-    abstract suspend fun run(input: I): OutCome<R>
+    abstract suspend fun run(input: I): Result<R>
 
-    override suspend fun onSuccess(success: OutCome.Success<R>) {
+    override suspend fun onSuccess(success: Result.Success<R>) {
         success(success.data)
     }
 

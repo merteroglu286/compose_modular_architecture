@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -23,6 +25,7 @@ import com.merteroglu286.leitnerbox.ui.theme.LeitnerBoxTheme
 import com.merteroglu286.navigator.core.AppNavigator
 import com.merteroglu286.navigator.destinations.Screens
 import com.merteroglu286.navigator.event.NavigatorEvent
+import com.merteroglu286.protodatastore.manager.session.SessionDataStoreInterface
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +35,9 @@ class RoutingActivity : ComponentActivity() {
     @Inject
     lateinit var appNavigator: AppNavigator
 
+    @Inject
+    lateinit var sessionDataStoreInterface: SessionDataStoreInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,15 +45,18 @@ class RoutingActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LeitnerBoxTheme {
-                AppScaffold(appNavigator)
+                AppScaffold(appNavigator, sessionDataStoreInterface)
 
             }
         }
     }
 
     @Composable
-    fun AppScaffold(appNavigator: AppNavigator) {
+    fun AppScaffold(appNavigator: AppNavigator, sessionDataStoreInterface: SessionDataStoreInterface) {
         val navController = rememberNavController()
+
+        val isUserLoggedIn by sessionDataStoreInterface.getIsUserLoggedInFlow()
+            .collectAsState(initial = false)
 
         LaunchedEffect(navController) {
             appNavigator.destinations.collect { event ->
@@ -76,7 +85,11 @@ class RoutingActivity : ComponentActivity() {
             NavHost(
                 modifier = Modifier.padding(innerPadding),
                 navController = navController,
-                startDestination = Screens.LoginScreenRoute.route,
+                startDestination = if (isUserLoggedIn) {
+                    Screens.HomeScreenRoute.route
+                } else {
+                    Screens.LoginScreenRoute.route
+                },
 //                enterTransition = { fadeIn(animationSpec = tween(500)) },
 //                exitTransition = { fadeOut(animationSpec = tween(500)) }
                 enterTransition = { EnterTransition.None },
