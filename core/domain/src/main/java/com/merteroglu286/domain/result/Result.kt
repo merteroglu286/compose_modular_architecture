@@ -1,12 +1,11 @@
 package com.merteroglu286.domain.result
 
-import com.merteroglu286.domain.model.ErrorMessage
 import com.merteroglu286.domain.usecase.UseCase
 
 sealed class Result<T> {
     abstract fun isSuccess(): Boolean
 
-    open fun errorMessage(): ErrorMessage? = null
+    open fun errorMessage(): com.merteroglu286.domain.model.Error? = null
 
     abstract suspend fun accept(useCase: UseCase<T>)
 
@@ -18,13 +17,13 @@ sealed class Result<T> {
         }
     }
 
-    class Error<T>(val errorMessage: ErrorMessage) : Result<T>() {
+    class Error<T>(val error: com.merteroglu286.domain.model.Error) : Result<T>() {
         override fun isSuccess(): Boolean = false
 
-        override fun errorMessage(): ErrorMessage = errorMessage
+        override fun errorMessage(): com.merteroglu286.domain.model.Error = error
 
         override suspend fun accept(useCase: UseCase<T>) {
-            useCase.onError(errorMessage)
+            useCase.onError(error)
         }
     }
 
@@ -38,7 +37,7 @@ sealed class Result<T> {
 
     companion object{
         fun <T> success(data: T) = Success(data)
-        fun <T> error(errorMessage: ErrorMessage) = Error<T>(errorMessage)
+        fun <T> error(error: com.merteroglu286.domain.model.Error) = Error<T>(error)
         fun <T> empty() = Empty<T>()
 
     }

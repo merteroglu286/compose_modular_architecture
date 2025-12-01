@@ -1,5 +1,6 @@
 package com.merteroglu286.data.service
 
+import com.merteroglu286.data.response.ApiResponse
 import com.merteroglu286.data.response.TokenResponse
 import retrofit2.Response
 import retrofit2.http.DELETE
@@ -10,10 +11,10 @@ const val REFRESH_TOKEN = "refreshToken"
 
 interface SessionService {
 
-    @GET("/Auth/GetSession")
+    @GET("/getSession")
     suspend fun getTokens(
         @Header(REFRESH_TOKEN) refreshToken: String
-    ): Response<TokenResponse>
+    ): Response<ApiResponse<TokenResponse>>
 
     @DELETE("/Auth/DeleteSession")
     suspend fun logout(

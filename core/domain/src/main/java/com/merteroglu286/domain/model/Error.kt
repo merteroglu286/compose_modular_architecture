@@ -1,7 +1,7 @@
 package com.merteroglu286.domain.model
 
-data class ErrorMessage(
-    val code: Int,
-    val message: String,
+data class Error(
+    val errorCode: Int,
+    val errorMessage: String,
     val errorFieldList: List<String>
 )

@@ -30,11 +30,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.merteroglu286.domain.model.ErrorMessage
+import com.merteroglu286.domain.model.Error
 import com.merteroglu286.presentation.R
 
 @Composable
-fun ErrorPopupView(errorMessage: ErrorMessage, retryAction: () -> Unit) {
+fun ErrorPopupView(error: Error, retryAction: () -> Unit) {
     var showDialog by remember { mutableStateOf(true) }
 
     fun dismissDialog() {
@@ -76,7 +76,7 @@ fun ErrorPopupView(errorMessage: ErrorMessage, retryAction: () -> Unit) {
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = errorMessage.message,
+                                text = error.errorMessage,
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.bodyLarge,
                             )

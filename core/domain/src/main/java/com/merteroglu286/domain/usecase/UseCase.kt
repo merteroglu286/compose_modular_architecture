@@ -1,6 +1,6 @@
 package com.merteroglu286.domain.usecase
 
-import com.merteroglu286.domain.model.ErrorMessage
+import com.merteroglu286.domain.model.Error
 import com.merteroglu286.domain.result.Result
 
 interface UseCase<R> {
@@ -9,5 +9,5 @@ interface UseCase<R> {
 
     suspend fun onEmpty()
 
-    suspend fun onError(errorMessage: ErrorMessage)
+    suspend fun onError(error: Error)
 }

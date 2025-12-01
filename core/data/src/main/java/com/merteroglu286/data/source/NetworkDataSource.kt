@@ -1,5 +1,6 @@
 package com.merteroglu286.data.source
 
+import android.util.Log
 import com.google.gson.Gson
 import com.merteroglu286.data.constants.HEADER_LOCATION
 import com.merteroglu286.data.error.getDefaultErrorResponse
@@ -60,8 +61,10 @@ class NetworkDataSource<SERVICE>(
                     }
                 }
             } else if (errorBody.isNullOrBlank()) {
+                Log.d("mertLog", "Error body is null or blank, code: $responseCode")
                 return onError(getDefaultErrorResponse(), responseCode)
             } else {
+                Log.d("mertLog", "Error body: $errorBody")
                 return onError(getErrorResponse(gson, errorBody), responseCode)
             }
         } catch (e: Exception) {

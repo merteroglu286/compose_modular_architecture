@@ -35,7 +35,7 @@ data class LoginViewState(
 package com.merteroglu286.auth.presentation.login.contract
 
 import com.merteroglu286.auth.presentation.login.error.LoginError
-import com.merteroglu286.domain.model.ErrorMessage
+import com.merteroglu286.domain.model.Error
 import com.merteroglu286.domain.model.User
 
 sealed class LoginEvent {
@@ -48,7 +48,7 @@ sealed class LoginEvent {
 sealed class LoginEffect {
     data class NavigateToMain(val user: User) : LoginEffect()
     data object NavigateToRegister : LoginEffect()
-    data class ShowError(val errorMessage: ErrorMessage) : LoginEffect()
+    data class ShowError(val error: Error) : LoginEffect()
 }
 
 data class LoginUiState(
@@ -58,7 +58,7 @@ data class LoginUiState(
     val userNameError: LoginError = LoginError.NoEntry,
     val passwordError: LoginError = LoginError.NoEntry,
     val isLoading: Boolean = false,
-    val errorMessage: ErrorMessage? = null,
+    val error: Error? = null,
     val isSuccess: Boolean = false,
     val user: User? = null
 ) {

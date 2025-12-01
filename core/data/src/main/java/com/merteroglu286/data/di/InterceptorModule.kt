@@ -14,6 +14,7 @@ import com.merteroglu286.data.interceptors.AuthenticationInterceptor
 import com.merteroglu286.data.interceptors.CLIENT_ID_HEADER
 import com.merteroglu286.data.interceptors.ConnectivityInterceptor
 import com.merteroglu286.data.interceptors.HeaderInterceptor
+import com.merteroglu286.data.service.SessionService
 import com.merteroglu286.protodatastore.manager.session.SessionDataStoreInterface
 import dagger.Module
 import dagger.Provides
@@ -24,6 +25,7 @@ import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.Locale
 import javax.inject.Named
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -48,11 +50,13 @@ class InterceptorModule {
     @Named(AUTHENTICATION_INTERCEPTOR_TAG)
     fun provideAuthenticationInterceptor(
         sessionDataStoreInterface: SessionDataStoreInterface,
-        @Named(DISPATCHER_IO_TAG) coroutineDispatcher: CoroutineDispatcher
+        @Named(DISPATCHER_IO_TAG) coroutineDispatcher: CoroutineDispatcher,
+        sessionServiceProvider: Provider<SessionService>
     ): Interceptor {
         return AuthenticationInterceptor(
             sessionDataStoreInterface = sessionDataStoreInterface,
-            coroutineDispatcher = coroutineDispatcher
+            coroutineDispatcher = coroutineDispatcher,
+            sessionServiceProvider = sessionServiceProvider
         )
     }
 

@@ -2,7 +2,7 @@ package com.merteroglu286.presentation
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
-import com.merteroglu286.domain.model.ErrorMessage
+import com.merteroglu286.domain.model.Error
 import com.merteroglu286.presentation.views.EmptyScreenView
 import com.merteroglu286.presentation.views.ErrorFullScreenView
 import com.merteroglu286.presentation.views.ErrorPopupView
@@ -32,13 +32,13 @@ sealed class ScreenState<out S, O> {
     // 1- Popup Error State
     data class ErrorPopup<S, O>(
         val viewState: S,
-        val errorMessage: ErrorMessage,
+        val error: Error,
     ) : ScreenState<S, O>()
 
     // 2- Full Screen Error State
     data class ErrorFullScreen<S, O>(
         val viewState: S,
-        val errorMessage: ErrorMessage,
+        val error: Error,
     ) : ScreenState<S, O>()
 
     // Empty State
@@ -105,8 +105,8 @@ sealed class ScreenState<out S, O> {
 
             when (screenState) {
                 is Empty -> EmptyScreenView(screenState.emptyMessage)
-                is ErrorFullScreen -> ErrorFullScreenView(screenState.errorMessage, retryAction)
-                is ErrorPopup -> ErrorPopupView(screenState.errorMessage, retryAction)
+                is ErrorFullScreen -> ErrorFullScreenView(screenState.error, retryAction)
+                is ErrorPopup -> ErrorPopupView(screenState.error, retryAction)
                 is LoadingFullScreen -> LoadingFullScreenView(screenState.loadingMessage)
                 is LoadingPopup -> LoadingPopupView(screenState.loadingMessage)
                 else -> {}

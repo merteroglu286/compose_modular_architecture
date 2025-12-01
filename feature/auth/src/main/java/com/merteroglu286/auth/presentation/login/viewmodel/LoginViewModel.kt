@@ -97,6 +97,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
 package com.merteroglu286.auth.presentation.login.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.merteroglu286.auth.domain.usecase.LoginUseCase
@@ -164,10 +165,13 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             loginUseCase.execute(
                 LoginUseCase.Input(loginUiState.userName, loginUiState.password),
                 success = { user ->
+                    Log.d("mertLog", "user: ${user}")
+                    Log.d("mertLog", "email: ${user.email}")
                     _screenStateFlow.value = ScreenState.Success(user)
                     sendEffect(LoginEffect.NavigateToMain(user))
                 },
                 error = { errorMessage ->
+                    Log.d("mertLog", "error message: ${errorMessage.errorMessage}")
                     _screenStateFlow.value = ScreenState.ErrorFullScreen(loginUiState, errorMessage)
                     sendEffect(LoginEffect.ShowError(errorMessage))
                 }

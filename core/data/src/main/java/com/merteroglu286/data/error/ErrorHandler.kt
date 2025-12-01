@@ -1,15 +1,33 @@
 package com.merteroglu286.data.error
 
+import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.merteroglu286.data.response.ApiResponse
 import com.merteroglu286.data.response.ErrorResponse
 
-// create default error response
-fun getDefaultErrorResponse() = ErrorResponse("", "", emptyList())
+fun getDefaultErrorResponse(): ErrorResponse {
+    return ErrorResponse(
+        errorCode = "UNKNOWN",
+        errorMessage = "Bilinmeyen bir hata oluştu",
+        errorFieldList = null
+    )
+}
 
-// getting error response from error body "string"
-fun getErrorResponse(gson: Gson, errorBodyString: String): ErrorResponse =
-    try {
-        gson.fromJson(errorBodyString, ErrorResponse::class.java)
+fun getErrorResponse(gson: Gson, errorBody: String): ErrorResponse {
+    return try {
+        // ApiResponse<Unit> olarak parse et
+        val type = object : TypeToken<ApiResponse<Unit>>() {}.type
+        val apiResponse: ApiResponse<Unit> = gson.fromJson(errorBody, type)
+
+        // error field'ını al
+        apiResponse.error ?: ErrorResponse(
+            errorCode = apiResponse.code.toString(),
+            errorMessage = apiResponse.message,
+            errorFieldList = null
+        )
     } catch (e: Exception) {
+        Log.e("NetworkError", "Error parsing error response", e)
         getDefaultErrorResponse()
     }
+}

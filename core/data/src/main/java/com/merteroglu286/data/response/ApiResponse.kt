@@ -10,5 +10,7 @@ data class ApiResponse<T>(
     @SerializedName("message")
     val message: String,
     @SerializedName("data")
-    val data: T?
+    val data: T?,
+    @SerializedName("error")
+    val error: ErrorResponse?
 )

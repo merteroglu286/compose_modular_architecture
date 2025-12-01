@@ -19,11 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.merteroglu286.domain.model.ErrorMessage
+import com.merteroglu286.domain.model.Error
 import com.merteroglu286.presentation.R
 
 @Composable
-fun ErrorFullScreenView(errorMessage: ErrorMessage, retryAction: () -> Unit) {
+fun ErrorFullScreenView(error: Error, retryAction: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -42,7 +42,7 @@ fun ErrorFullScreenView(errorMessage: ErrorMessage, retryAction: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = errorMessage.message,
+                text = error.errorMessage,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge
             )
