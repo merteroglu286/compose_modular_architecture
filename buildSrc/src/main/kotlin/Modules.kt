@@ -9,4 +9,5 @@ object Modules {
     const val AUTH = ":feature:auth"
     const val SIGN_UP = ":feature:signup"
     const val HOME = ":feature:home"
+    const val PROFILE = ":feature:profile"
 }

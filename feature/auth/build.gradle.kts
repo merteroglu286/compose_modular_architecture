@@ -16,6 +16,7 @@ dependencies {
     dataModule()
     presentationModule()
     navigatorModule()
+    signUpModule()
 
     androidx()
     hilt()

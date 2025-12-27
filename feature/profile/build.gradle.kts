@@ -7,7 +7,7 @@ plugins {
 apply<SharedLibraryGradlePlugin>()
 
 android {
-    namespace = "com.merteroglu286.home"
+    namespace = "com.merteroglu286.profile"
 }
 
 dependencies {
@@ -16,7 +16,6 @@ dependencies {
     dataModule()
     presentationModule()
     navigatorModule()
-    profileModule()
 
     androidx()
     hilt()

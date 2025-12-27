@@ -1,4 +1,4 @@
-package com.merteroglu286.home
+package com.merteroglu286.home.presentation.home.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

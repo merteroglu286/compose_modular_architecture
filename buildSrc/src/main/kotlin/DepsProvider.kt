@@ -99,6 +99,10 @@ fun DependencyHandler.homeModule(){
     moduleImplementation(Modules.HOME)
 }
 
+fun DependencyHandler.profileModule(){
+    moduleImplementation(Modules.PROFILE)
+}
+
 fun DependencyHandler.testDeps(){
     testImplementation(TestDependencies.JUNIT)
 }

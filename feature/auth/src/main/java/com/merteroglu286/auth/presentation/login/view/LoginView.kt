@@ -182,8 +182,7 @@ import com.merteroglu286.auth.presentation.login.contract.LoginUiState
 import com.merteroglu286.auth.presentation.login.viewmodel.LoginViewModel
 import com.merteroglu286.domain.model.toJson
 import com.merteroglu286.navigator.core.AppNavigator
-import com.merteroglu286.navigator.destinations.HomeDestination
-import com.merteroglu286.navigator.destinations.Screens
+import com.merteroglu286.navigator.routes.Routes
 import com.merteroglu286.presentation.ScreenState
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -199,16 +198,11 @@ fun LoginScreen(appNavigator: AppNavigator) {
                 is LoginEffect.NavigateToMain -> {
                     val encodedUserJson =
                         URLEncoder.encode(effect.user.toJson(), StandardCharsets.UTF_8.toString())
-                    appNavigator.navigate(
-                        HomeDestination.createHome(
-                            user = encodedUserJson,
-                            age = 36,
-                            userName = effect.user.userName,
-                        ),
+                    appNavigator.navigate(Routes.HomeScreenRoute.route,
                     )
                 }
 
-                is LoginEffect.NavigateToRegister -> appNavigator.navigate(Screens.SignUpScreenRoute.route)
+                is LoginEffect.NavigateToRegister -> appNavigator.navigate(Routes.SignUpScreenRoute.route)
                 is LoginEffect.ShowError -> {/* UI'de error göstermek için, Snackbar vs. */}
             }
         }
@@ -224,12 +218,7 @@ fun LoginScreen(appNavigator: AppNavigator) {
         onSuccessState { user ->
             val encodedUserJson =
                 URLEncoder.encode(user.toJson(), StandardCharsets.UTF_8.toString())
-            appNavigator.navigate(
-                HomeDestination.createHome(
-                    user = encodedUserJson,
-                    age = 36,
-                    userName = user.userName
-                ),
+            appNavigator.navigate(Routes.HomeScreenRoute.route,
             )
         }
         onEmptyState {

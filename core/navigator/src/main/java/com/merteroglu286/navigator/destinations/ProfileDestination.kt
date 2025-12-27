@@ -3,10 +3,10 @@ package com.merteroglu286.navigator.destinations
 import androidx.navigation.NamedNavArgument
 import com.merteroglu286.navigator.routes.Routes
 
-const val LOGIN_ROUTE = "LoginRoute"
+const val PROFILE_ROUTE = "ProfileRoute"
 
-object LoginDestination : NavigationDestination {
-    override fun route(): String = Routes.LoginScreenRoute.route
+object ProfileDestination : NavigationDestination {
+    override fun route(): String = Routes.ProfileScreenRoute.route
 
     override val arguments: List<NamedNavArgument>
         get() = listOf() // pass any argument needed

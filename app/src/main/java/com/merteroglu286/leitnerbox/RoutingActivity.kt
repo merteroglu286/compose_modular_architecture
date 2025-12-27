@@ -1,3 +1,4 @@
+/*
 package com.merteroglu286.leitnerbox
 
 import android.os.Bundle
@@ -98,6 +99,122 @@ class RoutingActivity : ComponentActivity() {
                 popExitTransition = { ExitTransition.None }
             ) {
                 addComposableDestinations(appNavigator, navController)
+            }
+        }
+    }
+}*/
+
+package com.merteroglu286.leitnerbox
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.merteroglu286.auth.navigation.authNavGraph
+import com.merteroglu286.home.navigation.homeNavGraph
+import com.merteroglu286.leitnerbox.ui.theme.LeitnerBoxTheme
+import com.merteroglu286.navigator.core.AppNavigator
+import com.merteroglu286.navigator.routes.AUTH_GRAPH
+import com.merteroglu286.navigator.routes.HOME_GRAPH
+import com.merteroglu286.navigator.routes.ROOT_GRAPH
+import com.merteroglu286.navigator.routes.Routes
+import com.merteroglu286.navigator.event.NavigatorEvent
+import com.merteroglu286.protodatastore.manager.session.SessionDataStoreInterface
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class RoutingActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var appNavigator: AppNavigator
+
+    @Inject
+    lateinit var sessionDataStoreInterface: SessionDataStoreInterface
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+        enableEdgeToEdge()
+        setContent {
+            LeitnerBoxTheme {
+                AppScaffold(appNavigator, sessionDataStoreInterface)
+            }
+        }
+    }
+
+    @Composable
+    fun AppScaffold(
+        appNavigator: AppNavigator,
+        sessionDataStoreInterface: SessionDataStoreInterface
+    ) {
+        val navController = rememberNavController()
+
+        val isUserLoggedIn by sessionDataStoreInterface.getIsUserLoggedInFlow()
+            .collectAsState(initial = false)
+
+        // Handle login state changes
+        LaunchedEffect(isUserLoggedIn) {
+            if (isUserLoggedIn) {
+                navController.navigate(HOME_GRAPH) {
+                    popUpTo(AUTH_GRAPH) { inclusive = true }
+                }
+            } else {
+                navController.navigate(AUTH_GRAPH) {
+                    popUpTo(HOME_GRAPH) { inclusive = true }
+                }
+            }
+        }
+
+        // Handle navigation events from AppNavigator
+        LaunchedEffect(navController) {
+            appNavigator.destinations.collect { event ->
+                when (event) {
+                    is NavigatorEvent.Directions -> {
+                        navController.navigate(
+                            route = event.destination,
+                            builder = event.builder
+                        )
+                    }
+
+                    NavigatorEvent.NavigateUp -> {
+                        navController.navigateUp()
+                    }
+
+                    NavigatorEvent.PopBackStack -> {
+                        navController.popBackStack()
+                    }
+                }
+            }
+        }
+
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            NavHost(
+                modifier = Modifier.padding(innerPadding),
+                navController = navController,
+                route = ROOT_GRAPH,
+                startDestination = if (isUserLoggedIn) Routes.HomeGraph.route else Routes.AuthGraph.route,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
+            ) {
+                authNavGraph(appNavigator)
+                homeNavGraph(appNavigator, navController)
             }
         }
     }
