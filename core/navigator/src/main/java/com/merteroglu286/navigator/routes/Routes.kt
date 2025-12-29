@@ -18,7 +18,6 @@ sealed class Screens(val route: String) {
 }*/
 
 // Graph routes
-const val ROOT_GRAPH = "root_graph"
 const val AUTH_GRAPH = "auth_graph"
 const val SIGNUP_GRAPH = "signup_graph"
 const val HOME_GRAPH = "home_graph"

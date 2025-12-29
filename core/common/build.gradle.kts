@@ -7,7 +7,7 @@ plugins {
 apply<SharedLibraryGradlePlugin>()
 
 android {
-    namespace = "com.merteroglu286.imagepicker"
+    namespace = "com.merteroglu286.common"
 }
 
 dependencies {

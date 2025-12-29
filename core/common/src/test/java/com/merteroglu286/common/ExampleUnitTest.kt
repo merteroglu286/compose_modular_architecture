@@ -1,4 +1,4 @@
-package com.merteroglu286.imagepicker
+package com.merteroglu286.common
 
 import org.junit.Test
 

@@ -24,10 +24,10 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/common" />
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/datastore" />
             <option value="$PROJECT_DIR$/core/domain" />
-            <option value="$PROJECT_DIR$/core/imagepicker" />
             <option value="$PROJECT_DIR$/core/navigator" />
             <option value="$PROJECT_DIR$/core/presentation" />
             <option value="$PROJECT_DIR$/core/protodatastore" />

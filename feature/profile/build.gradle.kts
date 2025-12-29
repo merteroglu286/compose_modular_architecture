@@ -11,11 +11,16 @@ android {
 }
 
 dependencies {
+// Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
     domainModule()
     dataModule()
     presentationModule()
     navigatorModule()
+    commonModule()
 
     androidx()
     hilt()

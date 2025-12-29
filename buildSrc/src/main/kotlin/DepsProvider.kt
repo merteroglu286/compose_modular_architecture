@@ -86,6 +86,9 @@ fun DependencyHandler.presentationModule(){
 fun DependencyHandler.navigatorModule(){
     moduleImplementation(Modules.NAVIGATOR)
 }
+fun DependencyHandler.commonModule(){
+    moduleImplementation(Modules.COMMON)
+}
 
 fun DependencyHandler.authModule(){
     moduleImplementation(Modules.AUTH)
