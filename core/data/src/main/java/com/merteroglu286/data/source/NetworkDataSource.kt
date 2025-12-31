@@ -25,12 +25,11 @@ import kotlin.coroutines.coroutineContext
 
 class NetworkDataSource<SERVICE>(
     private val service: SERVICE,
-    private val gson: Gson,
-    private val userIdProvider: () -> String
+    private val gson: Gson
 ) {
 
     suspend fun <R, T> performRequest(
-        request: suspend SERVICE.(String) -> Response<R>,
+        request: suspend SERVICE.() -> Response<R>,
         onSuccess: suspend (R, Headers) -> Result<T> = { _, _ -> Result.empty() },
         onRedirect: suspend (String, Int) -> Result<T> = { _, _ -> Result.empty() },
         onEmpty: suspend () -> Result<T> = { Result.empty() },
@@ -39,7 +38,7 @@ class NetworkDataSource<SERVICE>(
         }
     ): Result<T> {
         try {
-            val response = service.request(userIdProvider())
+            val response = service.request()
             val responseCode = response.code()
             val errorBody = response.errorBody()?.string()
 

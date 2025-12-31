@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider
 import java.io.File
+import java.io.FileOutputStream
 
 class ImageFileManager(
     private val context: Context
@@ -26,5 +27,26 @@ class ImageFileManager(
 
     fun getTempImageUri(): Uri {
         return getUriFromFile(createImageFile())
+    }
+
+    fun getFileFromUri(uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val tempFile = File.createTempFile(
+                "upload_${System.currentTimeMillis()}",
+                ".jpg",
+                context.cacheDir
+            )
+
+            FileOutputStream(tempFile).use { output ->
+                inputStream.copyTo(output)
+            }
+
+            inputStream.close()
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

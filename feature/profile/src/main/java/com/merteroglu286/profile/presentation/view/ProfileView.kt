@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -113,6 +115,10 @@ fun ProfileScreen(appNavigator: AppNavigator) {
                 is ProfileEffect.ShowError -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
+
+                is ProfileEffect.ImageUploaded -> {
+                    Toast.makeText(context, "Başarılı bir şekilde yüklendi", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -132,9 +138,21 @@ fun ProfileScreen(appNavigator: AppNavigator) {
         )
     }
 
-    ScreenState.of(screenState = screenState) {
+    ScreenState.of(screenState = screenState, retryAction = {
+        profileViewModel.onEvent(ProfileEvent.UploadImageClicked)
+    }) {
         onUiState { updatedState ->
             ScreenUiContent(updatedState, profileViewModel)
+        }
+        onLoadingState { _ ->
+        }
+        onSuccessState { uploadedImage ->
+            ProfileEffect.ImageUploaded(uploadedImage)
+        }
+        onEmptyState {
+        }
+        onErrorState { _ ->
+            // Error handling zaten ScreenState.of içinde yapılıyor
         }
     }
 }
@@ -160,8 +178,39 @@ fun ScreenUiContent(uiState: ProfileUiState, viewModel: ProfileViewModel) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { viewModel.onEvent(ProfileEvent.ClearImage) }) {
-                Text("Resmi Temizle")
+            // Yüklenen resmin URL'si varsa göster
+            if (uiState.uploadedImageUrl != null) {
+                Text("Resim başarıyla yüklendi!")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("URL: ${uiState.uploadedImageUrl}", maxLines = 2)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(
+                    onClick = { viewModel.onEvent(ProfileEvent.ClearImage) },
+                    enabled = !uiState.isUploading
+                ) {
+                    Text("Resmi Temizle")
+                }
+
+                Button(
+                    onClick = { viewModel.onEvent(ProfileEvent.UploadImageClicked) },
+                    enabled = !uiState.isUploading
+                ) {
+                    if (uiState.isUploading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text("Resmi Yükle")
+                    }
+                }
             }
         } else {
             Text("Henüz resim seçilmedi")

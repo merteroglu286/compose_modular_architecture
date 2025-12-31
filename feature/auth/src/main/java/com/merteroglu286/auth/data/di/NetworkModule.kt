@@ -32,10 +32,9 @@ class NetworkModule {
     @Singleton
     fun provideNetworkDataSource(
         loginService: LoginService,
-        gson: Gson,
-        @Named(USER_ID_TAG) userIdProvider: () -> String
+        gson: Gson
     ): NetworkDataSource<LoginService> {
-        return NetworkDataSource(loginService, gson, userIdProvider)
+        return NetworkDataSource(loginService, gson)
     }
 
     @Provides

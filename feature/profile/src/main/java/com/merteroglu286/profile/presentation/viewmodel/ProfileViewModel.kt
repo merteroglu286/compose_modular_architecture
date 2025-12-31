@@ -1,11 +1,15 @@
 package com.merteroglu286.profile.presentation.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.merteroglu286.common.image.ImageFileManager
 import com.merteroglu286.common.permission.PermissionManager
+import com.merteroglu286.presentation.R
 import com.merteroglu286.presentation.ScreenState
+import com.merteroglu286.profile.domain.model.UploadedImage
+import com.merteroglu286.profile.domain.usecase.UploadImageUseCase
 import com.merteroglu286.profile.presentation.contract.ProfileEffect
 import com.merteroglu286.profile.presentation.contract.ProfileEvent
 import com.merteroglu286.profile.presentation.contract.ProfileUiState
@@ -21,15 +25,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val permissionManager: PermissionManager,
-    private val imageFileManager: ImageFileManager
+    private val imageFileManager: ImageFileManager,
+    private val uploadImageUseCase: UploadImageUseCase
 ) : ViewModel() {
 
     private var profileUiState = ProfileUiState()
 
-    private val _screenStateFlow = MutableStateFlow<ScreenState<ProfileUiState, Unit>>(
+    private val _screenStateFlow = MutableStateFlow<ScreenState<ProfileUiState, UploadedImage>>(
         ScreenState.ScreenContent(profileUiState)
     )
-    val screenStateFlow: StateFlow<ScreenState<ProfileUiState, Unit>> get() = _screenStateFlow
+    val screenStateFlow: StateFlow<ScreenState<ProfileUiState, UploadedImage>> get() = _screenStateFlow
 
     private val _effectFlow = MutableSharedFlow<ProfileEffect>(replay = 0)
     val effectFlow: SharedFlow<ProfileEffect> = _effectFlow.asSharedFlow()
@@ -44,6 +49,7 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.PickFromCameraClicked -> sendEffect(ProfileEffect.OpenCamera)
             is ProfileEvent.ImagePicked -> handleImagePicked(event.uri)
             is ProfileEvent.ClearImage -> clearImage()
+            is ProfileEvent.UploadImageClicked -> uploadImage()
         }
     }
 
@@ -55,6 +61,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun handleImagePicked(uri: Uri?) {
         if (uri != null) {
+            Log.d("ProfileViewModel", "Image picked: $uri")
             updateState {
                 copy(
                     selectedImageUri = uri,
@@ -62,6 +69,7 @@ class ProfileViewModel @Inject constructor(
                 )
             }
         } else {
+            Log.e("ProfileViewModel", "Image URI is null")
             sendEffect(ProfileEffect.ShowError("Resim seçilemedi"))
         }
     }
@@ -70,7 +78,8 @@ class ProfileViewModel @Inject constructor(
         updateState {
             copy(
                 selectedImageUri = null,
-                isImageSelected = false
+                isImageSelected = false,
+                uploadedImageUrl = null
             )
         }
     }
@@ -86,4 +95,60 @@ class ProfileViewModel @Inject constructor(
 
     fun getGalleryPermission(): String = permissionManager.getGalleryPermission()
     fun getCameraPermission(): String = permissionManager.getCameraPermission()
+
+    private fun uploadImage(){
+        val imageUri = profileUiState.selectedImageUri
+        if (imageUri == null) {
+            Log.e("ProfileViewModel", "No image selected")
+            sendEffect(ProfileEffect.ShowError("Lütfen önce bir resim seçin"))
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                Log.d("ProfileViewModel", "Starting upload process")
+                _screenStateFlow.value = ScreenState.LoadingFullScreen(profileUiState, R.string.loading)
+
+                val imageFile = imageFileManager.getFileFromUri(imageUri)
+
+                if (imageFile == null) {
+                    Log.e("ProfileViewModel", "Failed to create file from URI")
+                    _screenStateFlow.value = ScreenState.ScreenContent(profileUiState)
+                    sendEffect(ProfileEffect.ShowError("Resim dosyası oluşturulamadı"))
+                    return@launch
+                }
+
+                Log.d("ProfileViewModel", "Image file created: ${imageFile.absolutePath}, size: ${imageFile.length()} bytes")
+
+                uploadImageUseCase.execute(
+                    UploadImageUseCase.Input(
+                        apiKey = "2efe7c16e66c44e46527b77c65b2554a",
+                        imageFile = imageFile
+                    ),
+                    success = { uploadedImage ->
+                        Log.d("ProfileViewModel", "Upload successful: ${uploadedImage.url}")
+                        updateState {
+                            copy(
+                                uploadedImageUrl = uploadedImage.url,
+                                isUploading = false
+                            )
+                        }
+
+                        _screenStateFlow.value = ScreenState.Success(uploadedImage)
+                        sendEffect(ProfileEffect.ImageUploaded(uploadedImage))
+                    },
+                    error = { error ->
+                        Log.e("ProfileViewModel", "Upload error: ${error.errorMessage}")
+                        updateState { copy(isUploading = false, error = error) }
+                        _screenStateFlow.value = ScreenState.ErrorFullScreen(profileUiState, error)
+                        sendEffect(ProfileEffect.ShowError(error.errorMessage))
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Upload exception", e)
+                _screenStateFlow.value = ScreenState.ScreenContent(profileUiState)
+                sendEffect(ProfileEffect.ShowError("Beklenmeyen hata: ${e.message}"))
+            }
+        }
+    }
 }
